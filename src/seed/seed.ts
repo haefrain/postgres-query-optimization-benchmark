@@ -3,8 +3,7 @@ import { dirname, join } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { fileURLToPath } from 'node:url';
 
-import { loadConfig } from '../lib/config';
-import { DbClient, withClient } from '../lib/db';
+import { DbClient } from '../lib/db';
 import {
   CITIES,
   CUISINES,
@@ -209,7 +208,7 @@ export async function seedDatabase(client: DbClient, scale: number): Promise<See
   return counts;
 }
 
-async function verify(client: DbClient): Promise<void> {
+export async function verify(client: DbClient): Promise<void> {
   const rows = async (sql: string): Promise<Record<string, unknown>[]> =>
     (await client.query(sql)).rows;
 
@@ -259,17 +258,4 @@ async function verify(client: DbClient): Promise<void> {
   console.log(`Restaurant 42 city: ${String(r42?.city)}`);
 }
 
-async function main(): Promise<void> {
-  const { databaseUrl, seedScale } = loadConfig();
-  console.log(
-    `Seeding at scale ${seedScale} (orders target: ${scaledCounts(seedScale).orders.toLocaleString()})\n`,
-  );
-  const start = performance.now();
-  await withClient(databaseUrl, async (client) => {
-    await seedDatabase(client, seedScale);
-    await verify(client);
-  });
-  console.log(`\nDone in ${Math.round((performance.now() - start) / 1000)}s.`);
-}
-
-void main();
+export { scaledCounts };
