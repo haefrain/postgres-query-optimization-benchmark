@@ -29,7 +29,7 @@ pnpm install
 
 - [x] **B1** — Esqueleto del proyecto, tooling, Postgres en Docker, CI
 - [x] **B2** — Esquema de delivery + seed determinista de 1.5M+ filas
-- [ ] **B3** — Harness de benchmark (captura de EXPLAIN ANALYZE, warm-up, mediana)
+- [x] **B3** — Harness de benchmark (captura de EXPLAIN ANALYZE, warm-up, mediana)
 - [ ] **B4** — ~10–12 escenarios de optimización, medidos contra Postgres real
 - [ ] **B5** — Tabla de resultados antes/después, metodología, ADRs
 
