@@ -52,5 +52,6 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Real schema + seed + benchmark steps are wired in upcoming milestones
-      - run: node -e "require('pg'); console.log('pg client OK')"
+      # Tiny-scale seed proves schema + seeder run end-to-end against real
+      # Postgres. Full-scale numbers come from a local run (see methodology).
+      - run: pnpm seed

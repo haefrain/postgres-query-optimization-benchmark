@@ -11,3 +11,6 @@ results/raw/
 
 .DS_Store
 *.log
+
+# internal design artifact (unverified agent claims); real docs live in docs/adr and README
+docs/_blueprint.json
