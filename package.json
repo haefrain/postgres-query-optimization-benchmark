@@ -14,6 +14,7 @@
     "db:up": "docker compose up -d",
     "db:down": "docker compose down -v",
     "seed": "tsx src/seed/run-seed.ts",
+    "benchmark": "tsx src/cli/run-benchmark.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
