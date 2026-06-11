@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bench
+      POSTGRES_PASSWORD: bench
+      POSTGRES_DB: bench
+    ports:
+      # 5434 on the host: 5432 is often a native postgres, 5433 may be another project
+      - '5434:5432'
+    # A benchmark needs realistic memory settings, not Postgres' tiny defaults.
+    # These are passed as server flags so the numbers in the README are honest
+    # about the configuration that produced them (documented in the methodology).
+    command:
+      - postgres
+      - '-c'
+      - 'shared_buffers=256MB'
+      - '-c'
+      - 'work_mem=16MB'
+      - '-c'
+      - 'effective_cache_size=1GB'
+      - '-c'
+      - 'random_page_cost=1.1'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U bench -d bench']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
