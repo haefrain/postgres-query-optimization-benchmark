@@ -1,0 +1,13 @@
+node_modules/
+coverage/
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
+
+# Generated benchmark output is committed selectively, raw runs are not
+results/raw/
+
+.DS_Store
+*.log

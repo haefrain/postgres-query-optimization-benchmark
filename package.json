@@ -1,0 +1,38 @@
+{
+  "name": "postgres-query-optimization-benchmark",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Reproducible PostgreSQL query optimization benchmark over a 1.5M+ row delivery-orders dataset: slow vs optimized queries with real EXPLAIN ANALYZE before/after",
+  "author": "Efraín Hernández <haefrain@gmail.com>",
+  "license": "MIT",
+  "packageManager": "pnpm@11.5.3",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down -v",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.0",
+    "globals": "^15.0.0",
+    "prettier": "^3.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.33.0",
+    "vitest": "^3.2.0"
+  }
+}
