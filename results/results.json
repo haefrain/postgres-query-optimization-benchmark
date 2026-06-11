@@ -1,0 +1,774 @@
+{
+  "environment": {
+    "postgres": "16.14",
+    "orders": "1500000",
+    "shared_buffers": "256MB",
+    "work_mem": "16MB",
+    "effective_cache_size": "1GB",
+    "random_page_cost": "1.1"
+  },
+  "results": [
+    {
+      "id": "missing-btree-orders-by-customer",
+      "title": "A missing index turns a customer lookup into a full-table scan",
+      "category": "Indexing fundamentals",
+      "speedup": 1414.3571428571427,
+      "percentFaster": 99.92929650017676,
+      "verified": true,
+      "before": {
+        "medianMs": 19.801,
+        "summary": {
+          "executionTimeMs": 19.693,
+          "planningTimeMs": 0.023,
+          "topActualRows": 6,
+          "nodeTypes": [
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 499998,
+          "sharedBlocksAccessed": 66760
+        }
+      },
+      "after": {
+        "medianMs": 0.014,
+        "summary": {
+          "executionTimeMs": 0.014,
+          "planningTimeMs": 0.01,
+          "topActualRows": 6,
+          "nodeTypes": [
+            "Sort",
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_customer_id"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 18
+        }
+      }
+    },
+    {
+      "id": "function-on-placed-at-defeats-index",
+      "title": "A function on an indexed column defeats the index (sargability)",
+      "category": "Anti-patterns",
+      "speedup": 231.02649006622516,
+      "percentFaster": 99.56714920452917,
+      "verified": true,
+      "before": {
+        "medianMs": 34.885,
+        "summary": {
+          "executionTimeMs": 35.12,
+          "planningTimeMs": 0.034,
+          "topActualRows": 1,
+          "nodeTypes": [
+            "Aggregate",
+            "Gather",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 499315,
+          "sharedBlocksAccessed": 88816
+        }
+      },
+      "after": {
+        "medianMs": 0.151,
+        "summary": {
+          "executionTimeMs": 0.145,
+          "planningTimeMs": 0.011,
+          "topActualRows": 1,
+          "nodeTypes": [
+            "Aggregate",
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_placed_at"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 80
+        }
+      }
+    },
+    {
+      "id": "expression-index-lower-email-login",
+      "title": "Case-insensitive email lookup needs an expression index",
+      "category": "Indexing fundamentals",
+      "speedup": 1758.3333333333335,
+      "percentFaster": 99.94312796208531,
+      "verified": true,
+      "before": {
+        "medianMs": 15.825,
+        "summary": {
+          "executionTimeMs": 15.722,
+          "planningTimeMs": 0.021,
+          "topActualRows": 1,
+          "nodeTypes": [
+            "Gather",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "customers"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 100000,
+          "sharedBlocksAccessed": 4528
+        }
+      },
+      "after": {
+        "medianMs": 0.009,
+        "summary": {
+          "executionTimeMs": 0.007,
+          "planningTimeMs": 0.011,
+          "topActualRows": 1,
+          "nodeTypes": [
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_customers_lower_email"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 4
+        }
+      }
+    },
+    {
+      "id": "prefix-like-text-pattern-ops",
+      "title": "Anchored LIKE 'prefix%' served by a text_pattern_ops index",
+      "category": "Indexing fundamentals",
+      "speedup": 299.57142857142856,
+      "percentFaster": 99.66618979494515,
+      "verified": true,
+      "before": {
+        "medianMs": 4.194,
+        "summary": {
+          "executionTimeMs": 4.157,
+          "planningTimeMs": 0.022,
+          "topActualRows": 10,
+          "nodeTypes": [
+            "Limit",
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "customers"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 99995,
+          "sharedBlocksAccessed": 9167
+        }
+      },
+      "after": {
+        "medianMs": 0.014,
+        "summary": {
+          "executionTimeMs": 0.014,
+          "planningTimeMs": 0.022,
+          "topActualRows": 10,
+          "nodeTypes": [
+            "Limit",
+            "Sort",
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_customers_full_name_pattern"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 9
+        }
+      }
+    },
+    {
+      "id": "partial-index-active-orders-dashboard",
+      "title": "A partial index for the rare rows an ops dashboard actually wants",
+      "category": "Partial & covering indexes",
+      "speedup": 2100.7333333333336,
+      "percentFaster": 99.95239757544985,
+      "verified": true,
+      "before": {
+        "medianMs": 31.511,
+        "summary": {
+          "executionTimeMs": 31.511,
+          "planningTimeMs": 0.034,
+          "topActualRows": 50,
+          "nodeTypes": [
+            "Limit",
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 459988,
+          "sharedBlocksAccessed": 89038
+        }
+      },
+      "after": {
+        "medianMs": 0.015,
+        "summary": {
+          "executionTimeMs": 0.014,
+          "planningTimeMs": 0.01,
+          "topActualRows": 50,
+          "nodeTypes": [
+            "Limit",
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_active_placed_at"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 28
+        }
+      }
+    },
+    {
+      "id": "composite-covering-restaurant-recent-orders",
+      "title": "A covering composite index gives an Index-Only Scan (Heap Fetches: 0)",
+      "category": "Partial & covering indexes",
+      "speedup": 1949.0909090909092,
+      "percentFaster": 99.94869402985074,
+      "verified": true,
+      "before": {
+        "medianMs": 21.44,
+        "summary": {
+          "executionTimeMs": 21.161,
+          "planningTimeMs": 0.031,
+          "topActualRows": 20,
+          "nodeTypes": [
+            "Limit",
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 499764,
+          "sharedBlocksAccessed": 89038
+        }
+      },
+      "after": {
+        "medianMs": 0.011,
+        "summary": {
+          "executionTimeMs": 0.01,
+          "planningTimeMs": 0.012,
+          "topActualRows": 20,
+          "nodeTypes": [
+            "Limit",
+            "Index Only Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_rest_status_placed_cov"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 8
+        }
+      }
+    },
+    {
+      "id": "keyset-pagination-deep-offset",
+      "title": "Deep OFFSET pagination vs keyset (seek) pagination",
+      "category": "Anti-patterns",
+      "speedup": 6285.071428571428,
+      "percentFaster": 99.98408928185837,
+      "verified": true,
+      "before": {
+        "medianMs": 87.991,
+        "summary": {
+          "executionTimeMs": 86.912,
+          "planningTimeMs": 0.04,
+          "topActualRows": 50,
+          "nodeTypes": [
+            "Limit",
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": true,
+          "maxRowsRemovedByFilter": 40012,
+          "sharedBlocksAccessed": 89080
+        }
+      },
+      "after": {
+        "medianMs": 0.014,
+        "summary": {
+          "executionTimeMs": 0.013,
+          "planningTimeMs": 0.01,
+          "topActualRows": 50,
+          "nodeTypes": [
+            "Limit",
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_status_placed_id"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 10
+        }
+      }
+    },
+    {
+      "id": "or-predicate-to-union-all",
+      "title": "An OR across two columns defeats a single index; UNION ALL fixes it",
+      "category": "Anti-patterns",
+      "speedup": 209.1904761904762,
+      "percentFaster": 99.52196676530845,
+      "verified": true,
+      "before": {
+        "medianMs": 21.965,
+        "summary": {
+          "executionTimeMs": 31.571,
+          "planningTimeMs": 0.03,
+          "topActualRows": 282,
+          "nodeTypes": [
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 499906,
+          "sharedBlocksAccessed": 66760
+        }
+      },
+      "after": {
+        "medianMs": 0.105,
+        "summary": {
+          "executionTimeMs": 0.101,
+          "planningTimeMs": 0.03,
+          "topActualRows": 282,
+          "nodeTypes": [
+            "Sort",
+            "Append",
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_customer_id",
+            "idx_orders_courier_id"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 861
+        }
+      }
+    },
+    {
+      "id": "nplus1-join-missing-fk-index",
+      "title": "N+1 collapsed into a JOIN — and the FK index that makes it a Nested Loop",
+      "category": "Joins",
+      "speedup": 3677.740740740741,
+      "percentFaster": 99.9728093938509,
+      "verified": true,
+      "before": {
+        "medianMs": 99.299,
+        "summary": {
+          "executionTimeMs": 99.299,
+          "planningTimeMs": 0.106,
+          "topActualRows": 15,
+          "nodeTypes": [
+            "Gather Merge",
+            "Sort",
+            "Hash Join",
+            "Seq Scan",
+            "Hash"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "order_items",
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 499999,
+          "sharedBlocksAccessed": 259304
+        }
+      },
+      "after": {
+        "medianMs": 0.027,
+        "summary": {
+          "executionTimeMs": 0.022,
+          "planningTimeMs": 0.048,
+          "topActualRows": 15,
+          "nodeTypes": [
+            "Sort",
+            "Nested Loop",
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_customer_id",
+            "idx_order_items_order_id"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 69
+        }
+      }
+    },
+    {
+      "id": "not-in-nullable-to-not-exists",
+      "title": "NOT IN over a nullable column returns wrong results; NOT EXISTS fixes it",
+      "category": "Anti-patterns",
+      "speedup": 2.7877583465818763,
+      "percentFaster": 64.12888508696892,
+      "verified": true,
+      "before": {
+        "medianMs": 3.507,
+        "summary": {
+          "executionTimeMs": 3.514,
+          "planningTimeMs": 0.014,
+          "topActualRows": 0,
+          "nodeTypes": [
+            "Seq Scan",
+            "Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_status"
+          ],
+          "relationsSeqScanned": [
+            "couriers"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 5000,
+          "sharedBlocksAccessed": 25428
+        }
+      },
+      "after": {
+        "medianMs": 1.258,
+        "summary": {
+          "executionTimeMs": 1.21,
+          "planningTimeMs": 0.039,
+          "topActualRows": 241,
+          "nodeTypes": [
+            "Hash Join",
+            "Index Only Scan",
+            "Hash",
+            "Seq Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_status_courier"
+          ],
+          "relationsSeqScanned": [
+            "couriers"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 500,
+          "sharedBlocksAccessed": 212
+        }
+      }
+    },
+    {
+      "id": "trigram-gin-ilike-name-search",
+      "title": "Leading-wildcard ILIKE search served by a trigram GIN index",
+      "category": "Full-text & JSONB",
+      "speedup": 95.83498349834984,
+      "percentFaster": 98.95653970659136,
+      "verified": true,
+      "before": {
+        "medianMs": 29.038,
+        "summary": {
+          "executionTimeMs": 29.369,
+          "planningTimeMs": 0.063,
+          "topActualRows": 1,
+          "nodeTypes": [
+            "Limit",
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "customers"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 100000,
+          "sharedBlocksAccessed": 9167
+        }
+      },
+      "after": {
+        "medianMs": 0.303,
+        "summary": {
+          "executionTimeMs": 0.287,
+          "planningTimeMs": 0.039,
+          "topActualRows": 1,
+          "nodeTypes": [
+            "Limit",
+            "Sort",
+            "Bitmap Heap Scan",
+            "Bitmap Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_customers_full_name_trgm"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 359
+        }
+      }
+    },
+    {
+      "id": "jsonb-gin-containment-promo-filter",
+      "title": "JSONB containment filter served by a GIN index",
+      "category": "Full-text & JSONB",
+      "speedup": 4.838625973063141,
+      "percentFaster": 79.33297581654281,
+      "verified": true,
+      "before": {
+        "medianMs": 39.159,
+        "summary": {
+          "executionTimeMs": 38.615,
+          "planningTimeMs": 0.037,
+          "topActualRows": 100,
+          "nodeTypes": [
+            "Limit",
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 495979,
+          "sharedBlocksAccessed": 89038
+        }
+      },
+      "after": {
+        "medianMs": 8.093,
+        "summary": {
+          "executionTimeMs": 8.037,
+          "planningTimeMs": 0.025,
+          "topActualRows": 100,
+          "nodeTypes": [
+            "Limit",
+            "Sort",
+            "Bitmap Heap Scan",
+            "Bitmap Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_metadata_gin"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 28975
+        }
+      }
+    },
+    {
+      "id": "brin-time-range-revenue",
+      "title": "A BRIN index: tiny footprint for time-range scans on append-only data",
+      "category": "Specialized indexes",
+      "speedup": 3.471667880553532,
+      "percentFaster": 71.1954013342844,
+      "verified": true,
+      "before": {
+        "medianMs": 23.833,
+        "summary": {
+          "executionTimeMs": 24.46,
+          "planningTimeMs": 0.032,
+          "topActualRows": 1,
+          "nodeTypes": [
+            "Aggregate",
+            "Gather",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 438356,
+          "sharedBlocksAccessed": 88816
+        }
+      },
+      "after": {
+        "medianMs": 6.865,
+        "summary": {
+          "executionTimeMs": 6.824,
+          "planningTimeMs": 0.03,
+          "topActualRows": 1,
+          "nodeTypes": [
+            "Aggregate",
+            "Gather",
+            "Bitmap Heap Scan",
+            "Bitmap Index Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_placed_at_brin"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 11786
+        }
+      }
+    },
+    {
+      "id": "distinct-on-latest-per-customer",
+      "title": "Latest order per customer: external-merge sort vs DISTINCT ON over a covering index",
+      "category": "Aggregation",
+      "speedup": 4.514581321864302,
+      "percentFaster": 77.8495517367921,
+      "verified": true,
+      "before": {
+        "medianMs": 411.477,
+        "summary": {
+          "executionTimeMs": 408.826,
+          "planningTimeMs": 0.034,
+          "topActualRows": 199898,
+          "nodeTypes": [
+            "Unique",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": true,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 66612
+        }
+      },
+      "after": {
+        "medianMs": 91.144,
+        "summary": {
+          "executionTimeMs": 91.144,
+          "planningTimeMs": 0.029,
+          "topActualRows": 199898,
+          "nodeTypes": [
+            "Result",
+            "Unique",
+            "Index Only Scan"
+          ],
+          "indexesUsed": [
+            "idx_orders_customer_placed_id_cov"
+          ],
+          "relationsSeqScanned": [],
+          "usesSeqScan": false,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 27120
+        }
+      }
+    },
+    {
+      "id": "materialized-view-daily-revenue",
+      "title": "A dashboard re-aggregating 2 years on every load vs a materialized-view rollup",
+      "category": "Aggregation",
+      "speedup": 15.842823014134979,
+      "percentFaster": 93.68799361636623,
+      "verified": true,
+      "before": {
+        "medianMs": 477.471,
+        "summary": {
+          "executionTimeMs": 478.604,
+          "planningTimeMs": 0.05,
+          "topActualRows": 20,
+          "nodeTypes": [
+            "Limit",
+            "Sort",
+            "Aggregate",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "orders"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 120035,
+          "sharedBlocksAccessed": 88816
+        }
+      },
+      "after": {
+        "medianMs": 30.138,
+        "summary": {
+          "executionTimeMs": 30.138,
+          "planningTimeMs": 0.026,
+          "topActualRows": 20,
+          "nodeTypes": [
+            "Limit",
+            "Gather Merge",
+            "Sort",
+            "Seq Scan"
+          ],
+          "indexesUsed": [],
+          "relationsSeqScanned": [
+            "mv_daily_revenue_by_restaurant"
+          ],
+          "usesSeqScan": true,
+          "usesDiskSort": false,
+          "maxRowsRemovedByFilter": 0,
+          "sharedBlocksAccessed": 26704
+        }
+      }
+    }
+  ]
+}
