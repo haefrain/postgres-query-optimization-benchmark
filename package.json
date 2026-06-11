@@ -13,6 +13,7 @@
   "scripts": {
     "db:up": "docker compose up -d",
     "db:down": "docker compose down -v",
+    "seed": "tsx src/seed/seed.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
