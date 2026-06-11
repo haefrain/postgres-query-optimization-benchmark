@@ -41,6 +41,7 @@ describe('summarizePlan', () => {
     expect(summary.usesDiskSort).toBe(false);
     expect(summary.nodeTypes).toContain('Sort');
     expect(summary.maxRowsRemovedByFilter).toBe(42858);
+    expect(summary.topActualRows).toBe(7142);
     expect(summary.executionTimeMs).toBeGreaterThan(0);
   });
 

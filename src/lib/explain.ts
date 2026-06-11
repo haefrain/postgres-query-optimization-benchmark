@@ -49,6 +49,8 @@ export interface PlanSummary {
   relationsSeqScanned: string[];
   usesSeqScan: boolean;
   usesDiskSort: boolean;
+  /** Rows the root node actually returned — exposes the NOT IN/NULL correctness bug (0 vs N). */
+  topActualRows?: number;
   maxRowsRemovedByFilter: number;
   sharedBlocksAccessed: number;
 }
@@ -62,6 +64,7 @@ export function summarizePlan(root: ExplainRoot): PlanSummary {
   return {
     executionTimeMs: root['Execution Time'],
     planningTimeMs: root['Planning Time'],
+    topActualRows: root.Plan['Actual Rows'],
     nodeTypes: unique(nodes.map((n) => n['Node Type'])),
     indexesUsed: unique(
       nodes.map((n) => n['Index Name']).filter((name): name is string => Boolean(name)),
